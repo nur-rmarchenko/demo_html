@@ -238,11 +238,11 @@
             
             try {
                 // Проверяем наличие Android интерфейса
-                if (typeof AndroidInterface !== 'undefined' && AndroidInterface.openPaymentService) {
+                if (typeof MoyOAndroid !== 'undefined' && MoyOAndroid.openPaymentService) {
                     console.log('Calling Android openPaymentService with:', PAYMENT_CONFIG);
                     
                     // Вызываем метод Android интерфейса
-                    AndroidInterface.openPaymentService(
+                    MoyOAndroid.openPaymentService(
                         PAYMENT_CONFIG.serviceId,
                         PAYMENT_CONFIG.requisite,
                         PAYMENT_CONFIG.additionalFields
@@ -252,8 +252,8 @@
                     
                 } else {
                     // Fallback для тестирования в браузере
-                    console.warn('AndroidInterface not found. Running in browser mode.');
-                    showStatus('AndroidInterface не найден. Проверьте интеграцию с WebView.', 'error');
+                    console.warn('MoyOAndroid not found. Running in browser mode.');
+                    showStatus('MoyOAndroid не найден. Проверьте интеграцию с WebView.', 'error');
                 }
                 
             } catch (error) {
