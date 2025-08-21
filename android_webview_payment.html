@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Service</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .payment-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .payment-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .payment-button:active {
+            transform: translateY(0);
+        }
+
+        .payment-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            opacity: 1;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            opacity: 1;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Платежный сервис</h1>
+        <p class="subtitle">Нажмите кнопку для открытия платежного сервиса</p>
+        
+        <div class="payment-info">
+            <div class="info-row">
+                <span class="info-label">Service ID:</span>
+                <span class="info-value">61993</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Реквизиты:</span>
+                <span class="info-value">996509000600</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Доп. поля:</span>
+                <span class="info-value">—</span>
+            </div>
+        </div>
+
+        <button id="paymentButton" class="payment-button" onclick="openPayment()">
+            Открыть платежный сервис
+        </button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        // Константы для платежного сервиса
+        const PAYMENT_CONFIG = {
+            serviceId: '61993',
+            requisite: '996509000600',
+            additionalFields: ''
+        };
+
+        // Функция для создания эффекта ripple
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        // Добавляем обработчик ripple эффекта
+        document.getElementById('paymentButton').addEventListener('click', createRipple);
+
+        // Основная функция для открытия платежного сервиса
+        function openPayment() {
+            const statusElement = document.getElementById('status');
+            const button = document.getElementById('paymentButton');
+            
+            // Отключаем кнопку во время обработки
+            button.disabled = true;
+            button.textContent = 'Обработка...';
+            
+            try {
+                // Проверяем наличие Android интерфейса
+                if (typeof AndroidInterface !== 'undefined' && AndroidInterface.openPaymentService) {
+                    console.log('Calling Android openPaymentService with:', PAYMENT_CONFIG);
+                    
+                    // Вызываем метод Android интерфейса
+                    AndroidInterface.openPaymentService(
+                        PAYMENT_CONFIG.serviceId,
+                        PAYMENT_CONFIG.requisite,
+                        PAYMENT_CONFIG.additionalFields
+                    );
+                    
+                    showStatus('Платежный сервис открыт успешно!', 'success');
+                    
+                } else {
+                    // Fallback для тестирования в браузере
+                    console.warn('AndroidInterface not found. Running in browser mode.');
+                    showStatus('AndroidInterface не найден. Проверьте интеграцию с WebView.', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Error calling openPaymentService:', error);
+                showStatus('Ошибка при вызове платежного сервиса: ' + error.message, 'error');
+            } finally {
+                // Восстанавливаем состояние кнопки через небольшую задержку
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.textContent = 'Открыть платежный сервис';
+                }, 1500);
+            }
+        }
+
+        // Функция для отображения статуса
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+            
+            // Скрываем сообщение через 5 секунд
+            setTimeout(() => {
+                statusElement.style.opacity = '0';
+                setTimeout(() => {
+                    statusElement.className = 'status';
+                }, 300);
+            }, 5000);
+        }
+
+        // Дополнительные функции для отладки
+        window.testPaymentService = function() {
+            console.log('Testing payment service...');
+            openPayment();
+        };
+
+        // Логируем готовность страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Payment page loaded successfully');
+            console.log('Payment configuration:', PAYMENT_CONFIG);
+        });
+    </script>
+</body>
+</html>
