@@ -242,11 +242,7 @@
                     console.log('Calling Android openPaymentService with:', PAYMENT_CONFIG);
                     
                     // Вызываем метод Android интерфейса
-                    MoyOAndroid.openPaymentService(
-                        PAYMENT_CONFIG.serviceId,
-                        PAYMENT_CONFIG.requisite,
-                        PAYMENT_CONFIG.additionalFields
-                    );
+                    MoyOAndroid.openExternalBrowser("https://google.com/");
                     
                     showStatus('Платежный сервис открыт успешно!', 'success');
                     
