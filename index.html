@@ -6,22 +6,22 @@
   <title>MoyOAndroid JS Tester</title>
   <style>
     body { margin:0; font:14px/1.45 system-ui, sans-serif; background:#0b0f14; color:#e6edf3; }
-    .wrap { max-width:960px; margin:24px auto; padding:0 16px; }
-    h1 { font-size:20px; margin-bottom:20px; }
-    .card { background:#121821; border:1px solid #223043; border-radius:12px; margin-bottom:20px; }
-    .card header { padding:12px 16px; border-bottom:1px solid #223043; display:flex; justify-content:space-between; align-items:center; gap:8px; }
-    .card h2 { margin:0; font-size:16px; flex:1; }
-    .card .body { padding:16px; }
-    .row { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
-    label { width:140px; color:#9fb3c8; }
-    input, textarea { flex:1; padding:8px; border-radius:8px; border:1px solid #223043; background:#0f1520; color:#e6edf3; font:inherit; }
-    textarea { min-height:80px; }
-    button { padding:8px 14px; border-radius:8px; border:1px solid #223043; background:#1a2432; color:#e6edf3; cursor:pointer; }
+    .wrap { max-width:600px; margin:0 auto; padding:12px; }
+    h1 { font-size:18px; margin:12px 0; text-align:center; }
+    .card { background:#121821; border:1px solid #223043; border-radius:12px; margin-bottom:16px; overflow:hidden; }
+    .card header { padding:10px 12px; border-bottom:1px solid #223043; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; }
+    .card h2 { margin:0; font-size:15px; flex:1 1 100%; }
+    .card .body { padding:12px; }
+    .row { display:flex; flex-direction:column; margin-bottom:12px; }
+    label { margin-bottom:4px; color:#9fb3c8; font-size:13px; }
+    input, textarea { width:100%; padding:8px; border-radius:8px; border:1px solid #223043; background:#0f1520; color:#e6edf3; font:inherit; box-sizing:border-box; }
+    textarea { min-height:80px; resize:vertical; }
+    button { padding:8px 14px; border-radius:8px; border:1px solid #223043; background:#1a2432; color:#e6edf3; cursor:pointer; font-size:14px; }
     button:hover { border-color:#4dd0e1; }
-    .log { margin-top:20px; padding:12px; border:1px dashed #223043; border-radius:12px; background:#0e1520; max-height:300px; overflow:auto; }
+    .log { margin-top:16px; padding:12px; border:1px dashed #223043; border-radius:12px; background:#0e1520; max-height:240px; overflow:auto; font-size:13px; }
     .entry { margin-bottom:10px; }
-    .ts { color:#9fb3c8; font-size:12px; }
-    .payload { white-space:pre-wrap; }
+    .ts { color:#9fb3c8; font-size:11px; }
+    .payload { white-space:pre-wrap; word-break:break-word; }
   </style>
 </head>
 <body>
@@ -97,17 +97,18 @@
       log.prepend(div);
     }
 
-    // Мок с универсальной поддержкой
-    const mockBridge = new Proxy({}, {
-      get(_, prop){
+    // Универсальный мок через Proxy
+    const MoyOAndroid = new Proxy(window.MoyOAndroid || {}, {
+      get(target, prop){
+        if (prop in target && typeof target[prop] === 'function') {
+          return target[prop].bind(target);
+        }
         return (...args) => {
           addLog(`[MOCK] ${prop}`, args);
           console.info(`[MOCK] вызван метод ${prop}`, args);
-        }
+        };
       }
     });
-
-    const MoyOAndroid = window.MoyOAndroid || mockBridge;
 
     $('#btnOpenExternal').onclick = () => {
       const url = $('#url').value;
