@@ -4,291 +4,151 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MoyOAndroid JS Tester</title>
-  <meta name="description" content="Страница для ручного тестирования JS-интерфейса MoyOAndroid в WebView/бридже." />
   <style>
-    :root {
-      --bg: #0b0f14;   /* тёмная тема по умолчанию */
-      --panel: #121821;
-      --accent: #4dd0e1;
-      --accent-2: #80cbc4;
-      --text: #e6edf3;
-      --muted: #9fb3c8;
-      --danger: #ff6b6b;
-      --ok: #7dd97d;
-      --border: #223043;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      font-synthesis-weight: none;
-    }
-    * { box-sizing: border-box; }
-    html,body { height: 100%; }
-    body {
-      margin: 0; background: var(--bg); color: var(--text);
-      font: 14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    .wrap { max-width: 980px; margin: 24px auto; padding: 0 16px; }
-
-    header { display:flex; gap: 12px; align-items: center; margin-bottom: 16px; }
-    header h1 { font-size: 20px; margin: 0; letter-spacing: 0.2px; }
-    .badge { padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); background: #0e1520; color: var(--muted); font-size: 12px; }
-    .badge.ok { color: var(--ok); border-color: #2d4e36; background: #0e1a13; }
-    .badge.err { color: var(--danger); border-color: #5a2e2e; background: #1a0e0e; }
-
-    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
-    .card { grid-column: span 12; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); }
-    .card header { padding: 14px 16px; border-bottom: 1px solid var(--border); justify-content: space-between; }
-    .card header h2 { margin: 0; font-size: 16px; }
-    .card .body { padding: 16px; }
-
-    .row { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: center; margin-bottom: 12px; }
-    label { color: var(--muted); }
-    input[type="text"], input[type="number"], textarea {
-      width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); outline: none; color: var(--text); background: #0f1520;
-      font: inherit; transition: border-color .15s ease;
-    }
-    input:focus, textarea:focus { border-color: var(--accent); }
-    textarea { min-height: 96px; resize: vertical; }
-
-    .actions { display:flex; gap: 8px; flex-wrap: wrap; }
-    button {
-      padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border);
-      background: linear-gradient(180deg,#1a2432,#111926); color: var(--text);
-      cursor: pointer; font-weight: 600; letter-spacing:.2px; transition: transform .02s ease, filter .15s ease, border-color .15s ease;
-    }
-    button:hover { filter: brightness(1.05); border-color: var(--accent); }
-    button:active { transform: translateY(1px); }
-    button.secondary { background: #0e1520; }
-
-    details { margin-top: 8px; color: var(--muted); }
-    code { font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; background:#0e1520; padding: 2px 6px; border-radius: 8px; border:1px solid var(--border); }
-
-    .log { margin-top: 20px; background: #0e1520; border: 1px dashed var(--border); border-radius: 14px; padding: 12px; max-height: 300px; overflow: auto; }
-    .log h3 { margin: 0 0 8px 0; font-size: 13px; color: var(--muted); }
-    .entry { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,.06); }
-    .entry:last-child { border-bottom: 0; }
-    .ts { color: var(--muted); font-variant-numeric: tabular-nums; }
-    .payload { white-space: pre-wrap; word-break: break-word; }
-
-    footer { margin: 28px 0 40px; color: var(--muted); font-size: 12px; }
-
-    @media (min-width: 860px) {
-      .card.openExternal { grid-column: span 6; }
-      .card.openPayment { grid-column: span 6; }
-    }
+    body { margin:0; font:14px/1.45 system-ui, sans-serif; background:#0b0f14; color:#e6edf3; }
+    .wrap { max-width:960px; margin:24px auto; padding:0 16px; }
+    h1 { font-size:20px; margin-bottom:20px; }
+    .card { background:#121821; border:1px solid #223043; border-radius:12px; margin-bottom:20px; }
+    .card header { padding:12px 16px; border-bottom:1px solid #223043; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .card h2 { margin:0; font-size:16px; flex:1; }
+    .card .body { padding:16px; }
+    .row { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+    label { width:140px; color:#9fb3c8; }
+    input, textarea { flex:1; padding:8px; border-radius:8px; border:1px solid #223043; background:#0f1520; color:#e6edf3; font:inherit; }
+    textarea { min-height:80px; }
+    button { padding:8px 14px; border-radius:8px; border:1px solid #223043; background:#1a2432; color:#e6edf3; cursor:pointer; }
+    button:hover { border-color:#4dd0e1; }
+    .log { margin-top:20px; padding:12px; border:1px dashed #223043; border-radius:12px; background:#0e1520; max-height:300px; overflow:auto; }
+    .entry { margin-bottom:10px; }
+    .ts { color:#9fb3c8; font-size:12px; }
+    .payload { white-space:pre-wrap; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <h1>MoyOAndroid JS Tester</h1>
-      <span id="bridgeState" class="badge">Проверка интерфейса…</span>
-    </header>
+    <h1>MoyOAndroid JS Tester</h1>
 
-    <div class="grid">
-      <!-- 1) openExternalBrowser -->
-      <section class="card openExternal" aria-labelledby="h-openExternal">
-        <header>
-          <h2 id="h-openExternal">openExternalBrowser(url: string)</h2>
-          <div class="actions">
-            <button id="btnOpenExternal">Выполнить</button>
-          </div>
-        </header>
-        <div class="body">
-          <div class="row">
-            <label for="url">URL</label>
-            <input id="url" type="text" inputmode="url" placeholder="https://google.com/" value="https://google.com/" autocomplete="url" />
-          </div>
-          <details>
-            <summary>Пояснение</summary>
-            Метод открывает указанный адрес во внешнем браузере устройства. Вебвью может ничего не вернуть.
-          </details>
+    <!-- openExternalBrowser -->
+    <section class="card">
+      <header>
+        <h2>openExternalBrowser(url: string)</h2>
+        <button id="btnOpenExternal">Выполнить</button>
+      </header>
+      <div class="body">
+        <div class="row">
+          <label for="url">URL</label>
+          <input id="url" type="text" value="https://google.com/" />
         </div>
-      </section>
-
-      <!-- 2) openPaymentService -->
-      <section class="card openPayment" aria-labelledby="h-openPayment">
-        <header>
-          <h2 id="h-openPayment">openPaymentService(serviceId: number, requisite: string, additionalFields: Array&lt;object&gt;)</h2>
-          <div class="actions">
-            <button id="btnOpenPayment">Выполнить</button>
-            <button id="btnTemplate" class="secondary" title="Вставить шаблон JSON">Шаблон JSON</button>
-          </div>
-        </header>
-        <div class="body">
-          <div class="row">
-            <label for="serviceId">serviceId</label>
-            <input id="serviceId" type="number" min="0" step="1" placeholder="Напр. 1001" value="1001" />
-          </div>
-          <div class="row">
-            <label for="requisite">requisite</label>
-            <input id="requisite" type="text" placeholder="Напр. 996501234567" value="996501234567" />
-          </div>
-          <div class="row" style="align-items:start;">
-            <label for="additionalFields">additionalFields (JSON-массив)</label>
-            <textarea id="additionalFields" placeholder='[\n  { "key": "account", "value": "123456" },\n  { "key": "amount", "value": 150, "currency": "KGS" }\n]'></textarea>
-          </div>
-          <details>
-            <summary>Пояснение и требования к JSON</summary>
-            <ul>
-              <li><code>additionalFields</code> — корректный JSON <em>массив</em> объектов. Примеры ключей: <code>key</code>, <code>value</code>, но структура может быть вашей.</li>
-              <li>При ошибке парсинга будет показана понятная ошибка. В мок‑режиме вызов просто логируется.</li>
-            </ul>
-          </details>
-        </div>
-      </section>
-    </div>
-
-    <!-- Журнал -->
-    <section class="log" aria-live="polite">
-      <h3>Журнал вызовов</h3>
-      <div id="log"></div>
+      </div>
     </section>
 
-    <footer>
-      <div>Если нативный объект <code>window.MoyOAndroid</code> не предоставлен (например, открыли страницу в обычном браузере), используется безопасный мок — вызовы видны только в журнале/консоли.</div>
-    </footer>
+    <!-- openPaymentService -->
+    <section class="card">
+      <header>
+        <h2>openPaymentService(serviceId, requisite, additionalFields)</h2>
+        <button id="btnOpenPayment">Выполнить</button>
+      </header>
+      <div class="body">
+        <div class="row">
+          <label for="serviceId">serviceId</label>
+          <input id="serviceId" type="number" value="1001" />
+        </div>
+        <div class="row">
+          <label for="requisite">requisite</label>
+          <input id="requisite" type="text" value="996501234567" />
+        </div>
+        <div class="row">
+          <label for="additionalFields">additionalFields</label>
+          <textarea id="additionalFields">[{"key":"account","value":"123456"}]</textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Universal Constructor -->
+    <section class="card">
+      <header>
+        <h2>Универсальный конструктор</h2>
+        <button id="btnAddParam">Добавить параметр</button>
+        <button id="btnCallCustom">Вызвать метод</button>
+      </header>
+      <div class="body">
+        <div class="row">
+          <label for="customMethod">Метод</label>
+          <input id="customMethod" type="text" placeholder="Введите имя метода" />
+        </div>
+        <div id="customParams"></div>
+      </div>
+    </section>
+
+    <!-- Log -->
+    <section class="log">
+      <div id="log"></div>
+    </section>
   </div>
 
   <script>
-    // --- Утилиты UI ---
     const $ = (sel) => document.querySelector(sel);
-    const bridgeBadge = $('#bridgeState');
+    const log = $('#log');
 
-    function ts() {
-      const d = new Date();
-      const p = (n) => String(n).padStart(2, '0');
-      return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
-    }
-
-    function logEntry(title, payload, level = 'info') {
-      const root = $('#log');
+    function addLog(title, payload) {
       const div = document.createElement('div');
       div.className = 'entry';
-      const tsEl = document.createElement('div'); tsEl.className = 'ts'; tsEl.textContent = ts();
-      const plEl = document.createElement('div'); plEl.className = 'payload';
-      const label = level === 'error' ? '❌ ' : '➡️ ';
-      plEl.textContent = `${label}${title}:\n${payload}`;
-      div.appendChild(tsEl); div.appendChild(plEl); root.prepend(div);
+      div.innerHTML = `<div class="ts">${new Date().toLocaleTimeString()}</div><div class="payload">${title}: ${typeof payload==='string'?payload:JSON.stringify(payload,null,2)}</div>`;
+      log.prepend(div);
     }
 
-    // --- Мок для локального тестирования ---
-    function createMockBridge() {
-      const mock = {
-        openExternalBrowser(url) {
-          console.info('[MOCK] openExternalBrowser', { url });
-          logEntry('openExternalBrowser', JSON.stringify({ url }, null, 2));
-        },
-        openPaymentService(serviceId, requisite, additionalFields) {
-          console.info('[MOCK] openPaymentService', { serviceId, requisite, additionalFields });
-          logEntry('openPaymentService', JSON.stringify({ serviceId, requisite, additionalFields }, null, 2));
-        },
-      };
-      Object.freeze(mock);
-      return mock;
-    }
-
-    // Не затираем реальный объект, только подставляем мок если его нет
-    const MoyOAndroid = window.MoyOAndroid || createMockBridge();
-
-    // --- Отрисовка статуса моста ---
-    (function updateBridgeState(){
-      const present = !!window.MoyOAndroid;
-      bridgeBadge.textContent = present ? 'MoyOAndroid обнаружен' : 'Мок‑режим (объект не найден)';
-      bridgeBadge.classList.add(present ? 'ok' : 'err');
-      if (!present) console.warn('MoyOAndroid не найден. Активирован мок.');
-    })();
-
-    // --- Обработчики ---
-    $('#btnOpenExternal').addEventListener('click', () => {
-      const url = $('#url').value.trim();
-      if (!url) {
-        logEntry('openExternalBrowser', 'URL пуст', 'error');
-        alert('Укажите URL');
-        return;
-      }
-      try {
-        // простая валидация URL
-        new URL(url);
-      } catch (e) {
-        logEntry('openExternalBrowser', `Некорректный URL: ${url}`, 'error');
-        alert('Некорректный URL');
-        return;
-      }
-      try {
-        MoyOAndroid.openExternalBrowser(url);
-      } catch (e) {
-        console.error(e);
-        logEntry('openExternalBrowser', String(e), 'error');
-        alert('Ошибка вызова openExternalBrowser. См. журнал.');
-      }
-    });
-
-    $('#btnTemplate').addEventListener('click', () => {
-      const template = [
-        { "key": "account", "value": "123456" },
-        { "key": "amount",  "value": 150, "currency": "KGS" },
-        { "key": "comment", "value": "Оплата услуги" }
-      ];
-      $('#additionalFields').value = JSON.stringify(template, null, 2);
-    });
-
-    $('#btnOpenPayment').addEventListener('click', () => {
-      const sidRaw = $('#serviceId').value.trim();
-      const requisite = $('#requisite').value.trim();
-      const addRaw = $('#additionalFields').value.trim();
-
-      if (!sidRaw) { alert('serviceId обязателен'); return; }
-      const serviceId = Number(sidRaw);
-      if (!Number.isFinite(serviceId)) { alert('serviceId должен быть числом'); return; }
-      if (!requisite) { alert('requisite обязателен'); return; }
-
-      let additionalFields = [];
-      if (addRaw) {
-        try {
-          const parsed = JSON.parse(addRaw);
-          if (!Array.isArray(parsed)) throw new Error('Ожидается массив JSON-объектов');
-          if (!parsed.every(x => x && typeof x === 'object' && !Array.isArray(x))) {
-            throw new Error('Каждый элемент должен быть объектом');
-          }
-          additionalFields = parsed;
-        } catch (e) {
-          logEntry('openPaymentService', 'Ошибка парсинга additionalFields: ' + e.message, 'error');
-          alert('Некорректный JSON в additionalFields: ' + e.message);
-          return;
+    // Мок с универсальной поддержкой
+    const mockBridge = new Proxy({}, {
+      get(_, prop){
+        return (...args) => {
+          addLog(`[MOCK] ${prop}`, args);
+          console.info(`[MOCK] вызван метод ${prop}`, args);
         }
       }
-
-      try {
-        MoyOAndroid.openPaymentService(serviceId, requisite, additionalFields);
-      } catch (e) {
-        console.error(e);
-        logEntry('openPaymentService', String(e), 'error');
-        alert('Ошибка вызова openPaymentService. См. журнал.');
-      }
     });
 
-    // --- Небольшой DX: восстановление последних значений
-    (function persist(){
-      const ids = ['url','serviceId','requisite','additionalFields'];
-      // load
-      ids.forEach(id => {
-        const v = localStorage.getItem('moy:'+id);
-        if (v != null) {
-          const el = document.getElementById(id);
-          if (el) el.value = v;
-        }
+    const MoyOAndroid = window.MoyOAndroid || mockBridge;
+
+    $('#btnOpenExternal').onclick = () => {
+      const url = $('#url').value;
+      MoyOAndroid.openExternalBrowser(url);
+      addLog('openExternalBrowser', {url});
+    };
+
+    $('#btnOpenPayment').onclick = () => {
+      const sid = Number($('#serviceId').value);
+      const req = $('#requisite').value;
+      let fields = [];
+      try { fields = JSON.parse($('#additionalFields').value); } catch(e) { alert('Некорректный JSON'); return; }
+      MoyOAndroid.openPaymentService(sid, req, fields);
+      addLog('openPaymentService', {sid,req,fields});
+    };
+
+    // Constructor logic
+    const customParams = $('#customParams');
+    $('#btnAddParam').onclick = () => {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `<input type="text" placeholder="ключ" class="key"/> <input type="text" placeholder="значение" class="value"/>`;
+      customParams.appendChild(row);
+    };
+
+    $('#btnCallCustom').onclick = () => {
+      const method = $('#customMethod').value.trim();
+      if(!method){ alert('Укажите метод'); return; }
+      const params = [];
+      customParams.querySelectorAll('.row').forEach(row => {
+        const key = row.querySelector('.key').value.trim();
+        const val = row.querySelector('.value').value.trim();
+        if(key) params.push(val);
       });
-      // save
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const handler = () => localStorage.setItem('moy:'+id, el.value);
-        el.addEventListener('input', handler);
-        el.addEventListener('change', handler);
-      });
-    })();
+      try {
+        MoyOAndroid[method](...params);
+        addLog(method, params);
+      } catch(e){
+        addLog('Ошибка вызова', e.message);
+      }
+    };
   </script>
 </body>
 </html>
