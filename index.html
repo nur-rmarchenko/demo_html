@@ -144,8 +144,8 @@
         if(key) params.push(val);
       });
       try {
-        MoyOAndroid[method](...params);
-        addLog(method, params);
+        const result = MoyOAndroid[method](...params);
+        addLog(`${method} вызван`, { params, result });
       } catch(e){
         addLog('Ошибка вызова', e.message);
       }
